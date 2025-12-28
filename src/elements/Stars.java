@@ -8,12 +8,10 @@ public class Stars {
     private Color color;
     private int x, y, width, height;
 
-    // Координаты каждой звезды (точки)
     private int[] xs;
     private int[] ys;
     private int count;
 
-    // Чтобы можно было пересоздавать тот же рисунок по seed (удобно для дебага)
     private long seed;
 
     public Stars(int x, int y, int width, int height, int count) {
@@ -72,12 +70,10 @@ public class Stars {
 
         Random rnd = new Random(seed);
 
-        // Подбираем сетку примерно квадратную: cols ~ sqrt(count * aspect)
         double aspect = (height == 0) ? 1.0 : (width / (double) height);
         int cols = (int) Math.ceil(Math.sqrt(count * aspect));
         int rows = (int) Math.ceil(count / (double) cols);
 
-        // Размер клетки
         double cellW = width / (double) cols;
         double cellH = height / (double) rows;
 
@@ -85,11 +81,9 @@ public class Stars {
         for (int r = 0; r < rows && i < count; r++) {
             for (int c = 0; c < cols && i < count; c++) {
 
-                // База клетки (левый верх)
                 double baseX = x + c * cellW;
                 double baseY = y + r * cellH;
 
-                // Jitter: случайно внутри клетки, но с небольшими полями, чтобы не прилипало к границам
                 double marginX = cellW * 0.15;
                 double marginY = cellH * 0.15;
 
@@ -103,10 +97,6 @@ public class Stars {
         }
     }
 
-    /**
-     * Рисуем звёзды как белые точки.
-     * Можно легко заменить fillRect на fillOval, или добавить размер/яркость позже.
-     */
     public void draw(Graphics g) {
         g.setColor(color);
 
