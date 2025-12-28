@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Stars {
 
-    private Color color;
+    private Color color = Color.WHITE;
     private int x, y, width, height;
 
     private int[] xs;
@@ -13,13 +13,18 @@ public class Stars {
     private int count;
 
     private long seed;
+    private double twinkleAcc = 0.0;
+
+
+    // смещение "камеры"
+    private double offX = 0.0;
+    private double offY = 0.0;
 
     public Stars(int x, int y, int width, int height, int count) {
         this(x, y, width, height, count, System.nanoTime());
     }
 
     public Stars(int x, int y, int width, int height, int count, long seed) {
-        this.color = Color.WHITE;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -30,38 +35,43 @@ public class Stars {
         generateStars();
     }
 
-    public Color getColor() {
-        return color;
+    // ВАЖНО: не пересоздаём звёзды каждый кадр.
+    // Пересоздаём только если реально поменялась область (например ресайз).
+    public void setBounds(int x, int y, int width, int height) {
+        boolean changed = (this.x != x) || (this.y != y) || (this.width != width) || (this.height != height);
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+
+        if (changed) {
+            // оставляем offset как есть, чтобы "камера" не сбрасывалась
+            generateStars();
+        }
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void update(double dt, double vx, double vy) {
+        if (count == 0 || width <= 0 || height <= 0) return;
+
+        // "Мерцание": копим время и раз в небольшой интервал
+        // полностью пересэмпливаем позиции звёзд.
+        twinkleAcc += dt;
+
+        // подбери: 0.03..0.12 (меньше = чаще мелькает)
+        final double interval = 0.06;
+
+        if (twinkleAcc >= interval) {
+            twinkleAcc = 0.0;
+
+            // Делаем новый seed (быстро и детерминированно перемешиваем)
+            seed = seed * 6364136223846793005L + 1442695040888963407L;
+
+            // Перегенерация координат = "мелькание"
+            generateStars();
+        }
     }
 
-    public int getCount() {
-        return count;
-    }
 
-    public void setCount(int count) {
-        this.count = Math.max(0, count);
-        generateStars(); // пересоздаём распределение
-    }
-
-    public long getSeed() {
-        return seed;
-    }
-
-    public void setSeed(long seed) {
-        this.seed = seed;
-        generateStars(); // пересоздаём распределение
-    }
-
-    /**
-     * Алгоритм равномерного распределения:
-     * 1) выбираем cols и rows так, чтобы cols*rows >= count
-     * 2) в каждую клетку кладём не более 1 звезды (перебираем клетки)
-     * 3) внутри клетки выбираем случайную позицию (jitter)
-     */
     private void generateStars() {
         xs = new int[count];
         ys = new int[count];
@@ -98,11 +108,22 @@ public class Stars {
     }
 
     public void draw(Graphics g) {
+        if (count == 0 || width <= 0 || height <= 0) return;
+
         g.setColor(color);
 
+        int dx = (int) Math.round(offX);
+        int dy = (int) Math.round(offY);
+
         for (int i = 0; i < count; i++) {
-            g.fillRect(xs[i], ys[i], 1, 1); // 1x1 пиксель
+            int px = xs[i] + dx;
+            int py = ys[i] + dy;
+
+            // wrap по области (x..x+width), (y..y+height)
+            px = x + Math.floorMod(px - x, width);
+            py = y + Math.floorMod(py - y, height);
+
+            g.fillRect(px, py, 1, 1);
         }
     }
 }
-

@@ -13,6 +13,14 @@ public class Axis {
         this.height = height;
     }
 
+    public void setCenter(int cx, int cy) {
+        this.cx = cx;
+        this.cy = cy;
+    }
+
+    public int getCenterX() { return cx; }
+    public int getCenterY() { return cy; }
+
     public void draw(Graphics g) {
         int left = cx - width / 2;
         int top  = cy - height / 2;
