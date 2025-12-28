@@ -4,12 +4,12 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 public class Planet {
-    private int centerX, centerY;   // центр системы (солнце)
-    private int orbitRadius;        // радиус орбиты
-    private int diameter;           // диаметр планеты
+    private int centerX, centerY;
+    private int orbitRadius;
+    private int diameter;
 
-    private double angle;           // текущий угол (рад)
-    private double angularSpeed;    // рад/сек
+    private double angle;
+    private double angularSpeed;
 
     // Градиент (центр -> середина -> край)
     private Color cInner = new Color(240, 240, 240);
@@ -23,28 +23,18 @@ public class Planet {
         this.diameter = diameter;
 
         this.angle = 0.0;
-        this.angularSpeed = 0.6; // по умолчанию (потом задаёшь из DrawPanel)
+        this.angularSpeed = 0.6;
     }
 
-    // --- Позиция/геометрия ---
     public void setCenter(int cx, int cy) {
         this.centerX = cx;
         this.centerY = cy;
     }
 
-    public void setOrbitRadius(int r) {
-        this.orbitRadius = r;
-    }
-
-    // Чтобы DrawPanel мог делать p.setSize(d, d)
     public void setSize(int width, int height) {
         this.diameter = Math.max(1, Math.min(width, height));
     }
 
-    // Если тебе удобнее — можно и так:
-    public void setDiameter(int d) {
-        this.diameter = Math.max(1, d);
-    }
 
     // --- Внешний вид ---
     public void setGradient(Color inner, Color mid, Color outer) {
@@ -58,7 +48,6 @@ public class Planet {
         this.angularSpeed = radPerSec;
     }
 
-    // dtSeconds — сколько секунд прошло с прошлого обновления
     public void update(double dtSeconds) {
         angle += angularSpeed * dtSeconds;
         angle %= (Math.PI * 2.0);

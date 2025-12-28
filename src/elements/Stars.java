@@ -35,21 +35,6 @@ public class Stars {
         generateStars();
     }
 
-    // ВАЖНО: не пересоздаём звёзды каждый кадр.
-    // Пересоздаём только если реально поменялась область (например ресайз).
-    public void setBounds(int x, int y, int width, int height) {
-        boolean changed = (this.x != x) || (this.y != y) || (this.width != width) || (this.height != height);
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-
-        if (changed) {
-            // оставляем offset как есть, чтобы "камера" не сбрасывалась
-            generateStars();
-        }
-    }
-
     public void update(double dt, double vx, double vy) {
         if (count == 0 || width <= 0 || height <= 0) return;
 
@@ -57,7 +42,6 @@ public class Stars {
         // полностью пересэмпливаем позиции звёзд.
         twinkleAcc += dt;
 
-        // подбери: 0.03..0.12 (меньше = чаще мелькает)
         final double interval = 0.06;
 
         if (twinkleAcc >= interval) {
