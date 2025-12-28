@@ -26,7 +26,6 @@ public class DrawPanel extends JPanel {
     private double starVx = 15.0;
     private double starVy = 6.0;
 
-    // ВАЖНО: эти поля должны быть ПОЛЯМИ, а не локальными переменными в paintComponent
     private int lastW = -1;
     private int lastH = -1;
 
@@ -77,7 +76,7 @@ public class DrawPanel extends JPanel {
                 lastW = w;
                 lastH = h;
 
-                // вариант А (лучший): пересоздаём звёзды с тем же seed (распределение стабильно),
+                // Пересоздаём звёзды с тем же seed (распределение стабильно),
                 // а движение продолжится через update()
                 stars = new Stars(0, 0, w, h, starsCount, starsSeed);
 

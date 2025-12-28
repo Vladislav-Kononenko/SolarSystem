@@ -56,32 +56,26 @@ public class Planet {
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
-        try {
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            // центр планеты на орбите
-            double px = centerX + orbitRadius * Math.cos(angle);
-            double py = centerY + orbitRadius * Math.sin(angle);
+        // центр планеты на орбите
+        double px = centerX + orbitRadius * Math.cos(angle);
+        double py = centerY + orbitRadius * Math.sin(angle);
+        float r = diameter / 2f;
+        float left = (float) px - r;
+        float top = (float) py - r;
 
-            float r = diameter / 2f;
-            float left = (float) px - r;
-            float top  = (float) py - r;
-
-            // “блик” (смещение источника градиента)
-            float hx = (float) (px - r * 0.35);
-            float hy = (float) (py - r * 0.35);
-
-            RadialGradientPaint paint = new RadialGradientPaint(
-                    new Point.Float(hx, hy),
-                    r,
-                    new float[]{0.0f, 0.75f, 1.0f},
-                    new Color[]{cInner, cMid, cOuter}
-            );
-
-            g2.setPaint(paint);
-            g2.fill(new Ellipse2D.Float(left, top, diameter, diameter));
-        } finally {
-            g2.dispose();
-        }
+        // “блик” (смещение источника градиента)
+        float hx = (float) (px - r * 0.35);
+        float hy = (float) (py - r * 0.35);
+        RadialGradientPaint paint = new RadialGradientPaint(
+                new Point.Float(hx, hy),
+                r,
+                new float[]{0.0f, 0.75f, 1.0f},
+                new Color[]{cInner, cMid, cOuter}
+        );
+        g2.setPaint(paint);
+        g2.fill(new Ellipse2D.Float(left, top, diameter, diameter));
+        g2.dispose();
     }
 }
